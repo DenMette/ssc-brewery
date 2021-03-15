@@ -20,24 +20,24 @@ import static org.springframework.security.test.web.servlet.setup.SecurityMockMv
 public abstract class BaseIT {
 
     @Autowired
-    WebApplicationContext wac;
+    protected WebApplicationContext wac;
 
-    MockMvc mockMvc;
-
-    @MockBean
-    BeerRepository beerRepository;
+    protected MockMvc mockMvc;
 
     @MockBean
-    BeerInventoryRepository beerInventoryRepository;
+    protected BeerRepository beerRepository;
 
     @MockBean
-    CustomerRepository customerRepository;
+    protected BeerInventoryRepository beerInventoryRepository;
 
     @MockBean
-    BreweryService breweryService;
+    protected CustomerRepository customerRepository;
 
     @MockBean
-    BeerService beerService;
+    protected BreweryService breweryService;
+
+    @MockBean
+    protected BeerService beerService;
 
     @BeforeEach
     void setUp() {
