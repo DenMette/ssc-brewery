@@ -14,13 +14,12 @@ import org.springframework.util.DigestUtils;
 public class PasswordEncodingTest {
 
     static final String PASSWORD = "password";
+    static final String GURU = "guru";
+    static final String TIGER = "tiger";
 
     @Test
     void hashingExample() {
         System.out.println(DigestUtils.md5DigestAsHex(PASSWORD.getBytes()));
-
-        String salted = PASSWORD + "ThisIsMySALTVALUE";
-        System.out.println(DigestUtils.md5DigestAsHex(salted.getBytes()));
     }
 
     @Test
@@ -35,8 +34,8 @@ public class PasswordEncodingTest {
         PasswordEncoder ldap = new LdapShaPasswordEncoder();
 
         System.out.println(ldap.encode(PASSWORD));
-        System.out.println(ldap.encode("guru"));
-        System.out.println(ldap.encode("tiger"));
+        System.out.println(ldap.encode(GURU));
+        System.out.println(ldap.encode(TIGER));
     }
 
     @Test
@@ -44,18 +43,16 @@ public class PasswordEncodingTest {
         PasswordEncoder sha256 = new StandardPasswordEncoder();
 
         System.out.println(sha256.encode(PASSWORD));
-        System.out.println(sha256.encode(PASSWORD));
-        System.out.println(sha256.encode("guru"));
-        System.out.println(sha256.encode("tiger"));
+        System.out.println(sha256.encode(GURU));
+        System.out.println(sha256.encode(TIGER));
     }
 
     @Test
     void testBCrypt() {
-        PasswordEncoder encoder = new BCryptPasswordEncoder(BCryptPasswordEncoder.BCryptVersion.$2Y, 15);
+        PasswordEncoder encoder = new BCryptPasswordEncoder();
 
         System.out.println(encoder.encode(PASSWORD));
-        System.out.println(encoder.encode(PASSWORD));
-        System.out.println(encoder.encode("guru"));
-        System.out.println(encoder.encode("tiger"));
+        System.out.println(encoder.encode(GURU));
+        System.out.println(encoder.encode(TIGER));
     }
 }
