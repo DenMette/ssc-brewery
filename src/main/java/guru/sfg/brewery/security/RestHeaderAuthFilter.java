@@ -2,6 +2,7 @@ package guru.sfg.brewery.security;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.log.LogMessage;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -56,12 +57,16 @@ public class RestHeaderAuthFilter extends AbstractAuthenticationProcessingFilter
         HttpServletRequest request = (HttpServletRequest) req;
         HttpServletResponse response = (HttpServletResponse) res;
 
-        Authentication authResult = attemptAuthentication(request, response);
+        try {
+            final Authentication authResult = attemptAuthentication(request, response);
 
-        if (authResult != null)
-            successfulAuthentication(request, response, chain, authResult);
-        else
-            chain.doFilter(request, response);
+            if (authResult != null)
+                successfulAuthentication(request, response, chain, authResult);
+            else
+                chain.doFilter(request, response);
+        } catch (final AuthenticationException e) {
+            unsuccessfulAuthentication(request, response, e);
+        }
     }
 
     @Override
@@ -71,6 +76,14 @@ public class RestHeaderAuthFilter extends AbstractAuthenticationProcessingFilter
         if (this.logger.isDebugEnabled()) {
             this.logger.debug(LogMessage.format("Set SecurityContextHolder to %s", authResult));
         }
+    }
+
+    @Override
+    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response,
+                                              AuthenticationException failed) throws IOException, ServletException {
+        SecurityContextHolder.clearContext();
+
+        response.sendError(HttpStatus.UNAUTHORIZED.value(), HttpStatus.UNAUTHORIZED.getReasonPhrase());
     }
 
     private String getPassword(HttpServletRequest request) {
