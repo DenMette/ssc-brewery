@@ -7,7 +7,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.crypto.password.NoOpPasswordEncoder;
+import org.springframework.security.crypto.password.LdapShaPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 /**
@@ -19,7 +19,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     PasswordEncoder passwordEncoder() {
-        return NoOpPasswordEncoder.getInstance();
+        return new LdapShaPasswordEncoder();
     }
 
     @Override
@@ -28,7 +28,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 requests
                         .antMatchers("/", "/webjars/**", "/resources/**", "/api/v1/beer").permitAll()
                         .antMatchers("/beers/find", "/beers").permitAll()
-                        .antMatchers(HttpMethod.GET,"/api/v1/beer/**").permitAll()
+                        .antMatchers(HttpMethod.GET, "/api/v1/beer/**").permitAll()
                         .mvcMatchers(HttpMethod.GET, "/api/v1/beerUpc/{upc}").permitAll()
                         .anyRequest().authenticated());
         http.formLogin();
@@ -39,19 +39,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.inMemoryAuthentication()
                     .withUser("spring")
-                    .password("guru")
+                    .password("{SSHA}R6u/hS9wZEBDRSXRddR9BoJiFerwWvYT01r6Zw==")
                     .roles("ADMIN")
                 .and()
                     .withUser("user")
-                    .password("password")
+                    .password("{SSHA}M7uo/XXGxPQ/1refwayLuO5wh0yC9MGjCqQNOA==")
                     .roles("USER")
                 .and()
                     .withUser("scott")
-                    .password("tiger")
+                    .password("{SSHA}6T0SmoqHXuLESCKGZrpX7NvEnLjGnXE3lOcpLA==")
                     .roles("CUSTOMER");
     }
 
-    //    @Override
+//    @Override
 //    @Bean
 //    protected UserDetailsService userDetailsService() {
 //        UserDetails admin = User.withDefaultPasswordEncoder()
