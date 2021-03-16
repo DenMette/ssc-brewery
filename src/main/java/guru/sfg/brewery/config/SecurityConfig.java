@@ -36,6 +36,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.addFilterBefore(restHeaderAuthFilter(authenticationManager()), UsernamePasswordAuthenticationFilter.class);
 
+        // Disable it at the moment
+        http.csrf().disable();
+
         http.authorizeRequests((requests) ->
                 requests
                         .antMatchers("/", "/webjars/**", "/resources/**", "/api/v1/beer").permitAll()
