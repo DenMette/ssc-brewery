@@ -49,7 +49,7 @@ public class PasswordEncodingTest {
 
     @Test
     void testBCrypt() {
-        PasswordEncoder encoder = new BCryptPasswordEncoder();
+        PasswordEncoder encoder = new BCryptPasswordEncoder(15);
 
         System.out.println(encoder.encode(PASSWORD));
         System.out.println(encoder.encode(GURU));
