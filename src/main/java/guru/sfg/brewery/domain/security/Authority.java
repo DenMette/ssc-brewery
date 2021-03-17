@@ -1,5 +1,7 @@
 package guru.sfg.brewery.domain.security;
 
+import lombok.*;
+
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
@@ -7,6 +9,11 @@ import java.util.Set;
 /**
  * @author Maarten Casteels
  */
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
+@Builder
 @Entity
 public class Authority {
 
@@ -16,6 +23,7 @@ public class Authority {
 
     private String role;
 
+    @Singular
     @ManyToMany(mappedBy = "authorities")
     private Set<User> users = new HashSet<>();
 }
