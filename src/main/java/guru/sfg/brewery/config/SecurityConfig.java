@@ -6,7 +6,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -54,21 +53,21 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.headers().frameOptions().sameOrigin();
     }
 
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.inMemoryAuthentication()
-                    .withUser("spring")
-                    .password("{ldap}{SSHA}sap4pE15vBNxeyUoIoXZJ0NM1fJRn/8aWrCD5A==")
-                    .roles("ADMIN")
-                .and()
-                    .withUser("user")
-                    .password("{bcrypt}$2a$10$U.QzyUoIle/rbTjazBsRzuEoKeBhWLVmSLmtrZ7Lfb0acO.57nFHC")
-                    .roles("USER")
-                .and()
-                    .withUser("scott")
-                    .password("{bcrypt15}$2a$15$npxMGdKtoqkUpD/tj9E9wuLOGavlKeqPDq2x3o6IBX0rSHmh8vvX6")
-                    .roles("CUSTOMER");
-    }
+//    @Override
+//    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+//        auth.inMemoryAuthentication()
+//                    .withUser("spring")
+//                    .password("{ldap}{SSHA}sap4pE15vBNxeyUoIoXZJ0NM1fJRn/8aWrCD5A==")
+//                    .roles("ADMIN")
+//                .and()
+//                    .withUser("user")
+//                    .password("{bcrypt}$2a$10$U.QzyUoIle/rbTjazBsRzuEoKeBhWLVmSLmtrZ7Lfb0acO.57nFHC")
+//                    .roles("USER")
+//                .and()
+//                    .withUser("scott")
+//                    .password("{bcrypt15}$2a$15$npxMGdKtoqkUpD/tj9E9wuLOGavlKeqPDq2x3o6IBX0rSHmh8vvX6")
+//                    .roles("CUSTOMER");
+//    }
 
 //    @Override
 //    @Bean
