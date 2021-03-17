@@ -41,13 +41,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.authorizeRequests((requests) ->
                 requests
-                        .antMatchers("/", "/webjars/**", "/resources/**", "/api/v1/beer").permitAll()
+                        .antMatchers("/h2-console/**").permitAll()
+                        .antMatchers("/", "/webjars/**", "/resources/**", "/api/v1/beer", "/h2-console/**").permitAll()
                         .antMatchers("/beers/find", "/beers").permitAll()
                         .antMatchers(HttpMethod.GET, "/api/v1/beer/**").permitAll()
                         .mvcMatchers(HttpMethod.GET, "/api/v1/beerUpc/{upc}").permitAll()
                         .anyRequest().authenticated());
         http.formLogin();
         http.httpBasic();
+
+        // h2 console config
+        http.headers().frameOptions().sameOrigin();
     }
 
     @Override
