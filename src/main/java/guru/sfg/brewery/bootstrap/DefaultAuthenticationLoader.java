@@ -44,9 +44,9 @@ public class DefaultAuthenticationLoader implements CommandLineRunner {
     }
 
     private void loadUsersData() {
-        Authority admin = this.authorityRepository.save(Authority.builder().role("ADMIN").build());
-        Authority user = this.authorityRepository.save(Authority.builder().role("USER").build());
-        Authority customer = this.authorityRepository.save(Authority.builder().role("CUSTOMER").build());
+        Authority admin = this.authorityRepository.save(Authority.builder().role("ROLE_ADMIN").build());
+        Authority user = this.authorityRepository.save(Authority.builder().role("ROLE_USER").build());
+        Authority customer = this.authorityRepository.save(Authority.builder().role("ROLE_CUSTOMER").build());
 
         this.userRepository.save(User.builder()
                 .username("spring")

@@ -31,14 +31,6 @@ class BeerRestControllerIT extends BaseIT {
     }
 
     @Test
-    void deleteBeer() throws Exception {
-        mockMvc.perform(delete("/api/v1/beer/61f080b3-8cf0-428b-ac53-d446ab7215be")
-                .header("Api-Key", "spring")
-                .header("Api-Secret", "guru"))
-                .andExpect(status().isOk());
-    }
-
-    @Test
     void deleteBeerWithBadCredentials() throws Exception {
         mockMvc.perform(delete("/api/v1/beer/61f080b3-8cf0-428b-ac53-d446ab7215be")
                 .header("Api-Key", "spring")
@@ -51,6 +43,20 @@ class BeerRestControllerIT extends BaseIT {
         mockMvc.perform(delete("/api/v1/beer/61f080b3-8cf0-428b-ac53-d446ab7215be")
                 .with(httpBasic("spring", "guru")))
                 .andExpect(status().is2xxSuccessful());
+    }
+
+    @Test
+    void deleteBeerHttpBasicUserRole() throws Exception {
+        mockMvc.perform(delete("/api/v1/beer/61f080b3-8cf0-428b-ac53-d446ab7215be")
+                .with(httpBasic("user", "password")))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void deleteBeerHttpBasicCustomerRole() throws Exception {
+        mockMvc.perform(delete("/api/v1/beer/61f080b3-8cf0-428b-ac53-d446ab7215be")
+                .with(httpBasic("scott", "tiger")))
+                .andExpect(status().isForbidden());
     }
 
     @Test
