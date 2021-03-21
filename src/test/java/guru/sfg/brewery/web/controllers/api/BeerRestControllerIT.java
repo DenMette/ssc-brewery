@@ -26,27 +26,33 @@ class BeerRestControllerIT extends BaseIT {
     @Nested
     @DisplayName("Find Beer Test")
     class FindBeerTest {
-        public Beer beerToFind() {
-            Random rand = new Random();
-
-            return beerRepository.save(Beer.builder()
-                    .beerName("Find My Beer")
-                    .beerStyle(BeerStyleEnum.IPA)
-                    .minOnHand(12)
-                    .quantityToBrew(200)
-                    .upc(String.valueOf(rand.nextInt(99_999_999)))
-                    .build());
-        }
-
         @Test
-        void findBeers() throws Exception {
+        void findBeerNoAuth() throws Exception {
             mockMvc.perform(get("/api/v1/beer/"))
-                    .andExpect(status().isOk());
+                    .andExpect(status().isUnauthorized());
+        }
+        @Test
+        void findBeerUser() throws Exception {
+            mockMvc.perform(get("/api/v1/beer/")
+            .with(httpBasic("user", "passowrd")))
+                    .andExpect(status().isUnauthorized());
+        }
+        @Test
+        void findBeerCustomer() throws Exception {
+            mockMvc.perform(get("/api/v1/beer/"))
+                    .andExpect(status().isUnauthorized());
+        }
+        @Test
+        void findBeerAdmin() throws Exception {
+            mockMvc.perform(get("/api/v1/beer/"))
+                    .andExpect(status().isUnauthorized());
         }
 
         @Test
         void findBeerById() throws Exception {
-            mockMvc.perform(get("/api/v1/beer/" + beerToFind().getId()))
+            Beer beer = beerRepository.findAll().get(0);
+
+            mockMvc.perform(get("/api/v1/beer/" + beer.getId()))
                     .andExpect(status().isOk());
         }
 
