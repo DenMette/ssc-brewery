@@ -40,14 +40,24 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.authorizeRequests((requests) ->
                 requests
+                        // Database, shouldn't be used in PRD
                         .antMatchers("/h2-console/**").permitAll()
-                        .antMatchers("/", "/webjars/**", "/resources/**", "/api/v1/beer").permitAll()
-                        .antMatchers("/beers/find", "/beers").permitAll()
-                        .antMatchers(HttpMethod.DELETE, "/api/v1/beer/**").hasRole("ADMIN")
-                        .antMatchers(HttpMethod.GET, "/api/v1/beer/**").permitAll()
-                        .mvcMatchers(HttpMethod.GET, "/api/v1/beerUpc/{upc}").permitAll()
-                        .mvcMatchers("/brewery/breweries").hasAnyRole("ADMIN", "CUSTOMER")
-                        .mvcMatchers(HttpMethod.GET, "/brewery/api/v1/breweries").hasAnyRole("ADMIN", "CUSTOMER")
+                        // Some stuff for styling purpose
+                        .antMatchers("/", "/webjars/**", "/resources/**").permitAll()
+
+                        // Beer Application
+                        .antMatchers(HttpMethod.GET, "/api/v1/beer/**")
+                            .hasAnyRole("ADMIN", "CUSTOMER", "USER")
+                        .antMatchers(HttpMethod.DELETE, "/api/v1/beer/**")
+                            .hasAnyRole("ADMIN")
+                        .mvcMatchers(HttpMethod.GET, "/api/v1/beerUpc/{upc}")
+                            .hasAnyRole("ADMIN", "CUSTOMER", "USER")
+                        .mvcMatchers("/brewery/breweries")
+                            .hasAnyRole("ADMIN", "CUSTOMER")
+                        .mvcMatchers(HttpMethod.GET, "/brewery/api/v1/breweries")
+                            .hasAnyRole("ADMIN", "CUSTOMER")
+                        .antMatchers("/beers/find", "/beers/{beerId}")
+                            .hasAnyRole("ADMIN", "CUSTOMER", "USER")
                         .anyRequest().authenticated());
         http.formLogin();
         http.httpBasic();
