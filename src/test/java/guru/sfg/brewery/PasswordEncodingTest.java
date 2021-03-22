@@ -1,5 +1,6 @@
 package guru.sfg.brewery;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.LdapShaPasswordEncoder;
@@ -11,6 +12,7 @@ import org.springframework.util.DigestUtils;
 /**
  * @author Maarten Casteels
  */
+@Disabled("Just run when needed! ")
 public class PasswordEncodingTest {
 
     static final String PASSWORD = "password";
