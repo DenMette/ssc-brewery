@@ -21,9 +21,9 @@ public class Authority {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String role;
+    private String permission;
 
     @Singular
     @ManyToMany(mappedBy = "authorities")
-    private Set<User> users = new HashSet<>();
+    private Set<Role> roles = new HashSet<>();
 }
