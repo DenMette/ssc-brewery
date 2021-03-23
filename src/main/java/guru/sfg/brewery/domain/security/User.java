@@ -1,6 +1,10 @@
 package guru.sfg.brewery.domain.security;
 
 import lombok.*;
+import org.springframework.security.core.CredentialsContainer;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -16,7 +20,7 @@ import java.util.stream.Collectors;
 @Setter
 @Builder
 @Entity
-public class User {
+public class User implements UserDetails, CredentialsContainer {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,12 +37,12 @@ public class User {
     private Set<Role> roles = new HashSet<>();
 
     @Transient
-    private Set<Authority> authorities;
-
-    public Set<Authority> getAuthorities() {
+    public Set<GrantedAuthority> getAuthorities() {
         return this.roles.stream()
                 .map(Role::getAuthorities)
                 .flatMap(Set::stream)
+                .map(Authority::getPermission)
+                .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toSet());
     }
 
@@ -53,4 +57,9 @@ public class User {
 
     @Builder.Default
     private boolean enabled = true;
+
+    @Override
+    public void eraseCredentials() {
+        this.password = null;
+    }
 }
