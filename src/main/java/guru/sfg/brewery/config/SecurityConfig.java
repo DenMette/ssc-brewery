@@ -4,6 +4,7 @@ import guru.sfg.brewery.security.PasswordEncoderFactories;
 import guru.sfg.brewery.security.RestHeaderAuthFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -46,7 +47,21 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         // Some stuff for styling purpose
                         .antMatchers("/", "/webjars/**", "/resources/**").permitAll()
                         .anyRequest().authenticated());
-        http.formLogin();
+        http.formLogin(loginConfigurer -> {
+            loginConfigurer
+                    .loginProcessingUrl("/login")
+                    .loginPage("/")
+                    .successForwardUrl("/")
+                    .defaultSuccessUrl("/")
+                    .failureUrl("/?error")
+            ;
+        })
+        .logout(logoutConfigurer -> {
+            logoutConfigurer
+                    .logoutRequestMatcher(new AntPathRequestMatcher("/logout", HttpMethod.GET.name()))
+                    .logoutSuccessUrl("/?logout")
+                    .permitAll();
+        });
         http.httpBasic();
 
         // h2 console config
