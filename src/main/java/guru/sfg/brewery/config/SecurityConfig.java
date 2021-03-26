@@ -2,6 +2,7 @@ package guru.sfg.brewery.config;
 
 import guru.sfg.brewery.security.PasswordEncoderFactories;
 import guru.sfg.brewery.security.RestHeaderAuthFilter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -10,17 +11,23 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 /**
  * @author Maarten Casteels
  */
+@RequiredArgsConstructor
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+    private final UserDetailsService userDetailsService;
+    private final PersistentTokenRepository persistentTokenRepository;
 
     public RestHeaderAuthFilter restHeaderAuthFilter(AuthenticationManager authenticationManager) {
         RestHeaderAuthFilter filter = new RestHeaderAuthFilter(new AntPathRequestMatcher("/api/**"));
@@ -47,21 +54,36 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         // Some stuff for styling purpose
                         .antMatchers("/", "/webjars/**", "/resources/**").permitAll()
                         .anyRequest().authenticated());
-        http.formLogin(loginConfigurer -> {
-            loginConfigurer
-                    .loginProcessingUrl("/login")
-                    .loginPage("/")
-                    .successForwardUrl("/")
-                    .defaultSuccessUrl("/")
-                    .failureUrl("/?error")
-            ;
-        })
-        .logout(logoutConfigurer -> {
-            logoutConfigurer
-                    .logoutRequestMatcher(new AntPathRequestMatcher("/logout", HttpMethod.GET.name()))
-                    .logoutSuccessUrl("/?logout")
-                    .permitAll();
-        });
+
+        http
+                .formLogin(loginConfigurer -> {
+                    loginConfigurer
+                            .loginProcessingUrl("/login")
+                            .loginPage("/")
+                            .successForwardUrl("/")
+                            .defaultSuccessUrl("/")
+                            .failureUrl("/?error")
+                    ;
+                })
+                .logout(logoutConfigurer -> {
+                    logoutConfigurer
+                            .logoutRequestMatcher(new AntPathRequestMatcher("/logout", HttpMethod.GET.name()))
+                            .logoutSuccessUrl("/?logout")
+                            .permitAll();
+                })
+                .rememberMe(rememberMeConfigurer -> {
+                    rememberMeConfigurer
+                            .tokenRepository(persistentTokenRepository)
+                            .userDetailsService(userDetailsService);
+                });
+//        .rememberMe(rememberMeConfigurer -> {
+//            rememberMeConfigurer.key("sfg-key")
+//                    .userDetailsService(userDetailsService);
+//        });
+//        .rememberMe()
+//            .key("sfg-key")
+//            .userDetailsService(userDetailsService);
+
         http.httpBasic();
 
         // h2 console config
